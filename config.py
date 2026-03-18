@@ -121,22 +121,86 @@ AMRUTA_PROFILE = {
     ],
     
     'salary_range': {
-        'min_lpa': 8,
+        'min_lpa': 10,        # Increased from 8
         'max_lpa': 50,
-        'currency': 'INR'
+        'currency': 'INR',
+        'preferred_min': 15,  # Prefer above 15 LPA
     },
     
     'job_type': 'Full-time',
     
-    # Filters
+    # Experience Filters
     'min_experience': 0,
     'max_experience': 2,
-    'exclude_keywords': [
-        'consultant',
-        'sales',
-        'marketing',
-        'support',
-    ]
+    
+    # STRICT QUALITY FILTERS
+    'quality_filters': {
+        'required_keywords_in_title': [
+            'software',
+            'engineer',
+            'developer',
+            'ai',
+            'ml',
+            'data',
+            'backend',
+            'frontend',
+            'full stack',
+            'associate',
+            'graduate',
+            'sde',
+            'swe',
+            'fresher',
+            'trainee',
+        ],
+        'reject_keywords': [
+            'consultant',
+            'sales',
+            'marketing',
+            'support',
+            'hr',
+            'bcd',
+            'bpo',
+            'call center',
+            'accountant',
+            'finance',
+            'customer service',
+            'operations',
+        ],
+        'reject_companies': [
+            'TCS',
+            'Infosys',
+            'Wipro',
+            'HCL',
+            'Cognizant',
+            'Accenture',
+            'Deloitte',
+            'EY',
+            'KPMG',
+            'PwC',
+        ],  # Typically service-based with low fresher salaries
+        
+        'min_job_quality_score': 7,  # Only show jobs scoring 7+ out of 10
+        
+        'prefer_company_types': [
+            'Product',
+            'Startup',
+            'Tech Company',
+            'FAANG',
+            'Indian Tech',
+        ],
+    },
+    
+    # LinkedIn specific preferences
+    'linkedin_preferences': {
+        'filter_by': [
+            'recruiter_posts',
+            'employee_referrals',
+            'company_careers',
+        ],
+        'must_have_salary_info': True,
+        'must_state_fresher_eligible': True,
+    }
+
 }
 
 # JOB PORTALS TO SEARCH

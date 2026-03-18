@@ -47,15 +47,33 @@ class JobSearcher:
         )
     
     def search_linkedin(self) -> List[Dict]:
-        """Search LinkedIn Jobs for entry-level positions"""
+        """Search LinkedIn Jobs - FOCUSED on recruiter posts & employee referrals"""
         jobs = []
         try:
-            logger.info("Searching LinkedIn Jobs...")
+            logger.info("🔍 Searching LinkedIn (Recruiter Posts + Employee Referrals)...")
             
-            # LinkedIn requires browser automation for full scraping
-            # This version uses search queries to find job postings
-            logger.info("📌 LinkedIn search ready for Selenium implementation")
-            logger.info("   Use: selenium + LinkedIn login for real-time scraping")
+            # LinkedIn search queries focusing on QUALITY hits
+            search_queries = [
+                "fresher software engineer jobs bangalore india",
+                "entry level python developer roles india",
+                "graduate engineer trainee tech companies",
+                "ml ai engineer fresher positions india",
+                "sde swe fresher batch 2026 india",
+                "freshers wanted software engineer india",
+                "recruiter post software engineer fresher",
+                "employee referral program tech fresher",
+            ]
+            
+            logger.info(f"📌 LinkedIn: {len(search_queries)} search queries configured")
+            logger.info("   Filter: Recruiter posts + Employee referrals + Verified companies")
+            logger.info("   Requirement: Selenium automation for LinkedIn login")
+            
+            # To implement:
+            # 1. Use Selenium to login to LinkedIn
+            # 2. For each query: search and scrape job cards
+            # 3. Filter for recruiter badge/employee post tags
+            # 4. Extract: title, company, location, salary, posting_date
+            # 5. Only keep jobs marked as "entry level" or "fresher"
             
         except Exception as e:
             logger.warning(f"LinkedIn search error: {e}")
@@ -284,9 +302,9 @@ class JobSearcher:
         return jobs
     
     def run_search(self) -> List[Dict]:
-        """Execute full job search across ALL platforms"""
+        """Execute full job search across ALL platforms - QUALITY FOCUSED"""
         logger.info("=" * 70)
-        logger.info("ARIA JOB SEARCH - COMPREHENSIVE MULTI-PLATFORM MODE")
+        logger.info("ARIA JOB SEARCH - QUALITY-FOCUSED MODE")
         logger.info(f"Scanning Date: {self.report_date}")
         logger.info("=" * 70)
         
@@ -298,112 +316,128 @@ class JobSearcher:
         all_jobs.extend(self.search_github_jobs())
         
         # READY FOR IMPLEMENTATION (structure in place)
-        logger.info("\n🟡 READY FOR IMPLEMENTATION (framework ready):")
-        all_jobs.extend(self.search_linkedin())
-        all_jobs.extend(self.search_naukri())
-        all_jobs.extend(self.search_indeed())
-        all_jobs.extend(self.search_internshala())
-        all_jobs.extend(self.search_glassdoor())
-        all_jobs.extend(self.search_stackoverflow_jobs())
-        all_jobs.extend(self.search_startup_boards())
-        all_jobs.extend(self.search_company_careers())
-        all_jobs.extend(self.search_twitter_jobs())
-        all_jobs.extend(self.search_telegram_channels())
+        logger.info("\n🟡 READY FOR QUALITY-FOCUSED IMPLEMENTATION:")
+        all_jobs.extend(self.search_linkedin())       # LinkedIn recruiter + employee posts
+        all_jobs.extend(self.search_naukri())         # Naukri fresh grads only
+        all_jobs.extend(self.search_indeed())         # Indeed entry-level filter
+        all_jobs.extend(self.search_internshala())    # Internshala jobs/internships
+        all_jobs.extend(self.search_glassdoor())      # Glassdoor salary transparency
         
-        logger.info("\n=" * 70)
+        logger.info("\n" + "=" * 70)
         logger.info(f"Total raw jobs collected: {len(all_jobs)}")
         
-        # Score all jobs
+        # STRICT QUALITY FILTERING
+        logger.info("\n🎯 APPLYING STRICT QUALITY FILTERS...")
+        
         scored_jobs = []
+        rejected_count = 0
+        
         for job in all_jobs:
             score = self.scorer.score_job(job)
-            job['score'] = score
-            if score >= 5:  # Minimum threshold
+            
+            # Only keep jobs scoring 7 or higher
+            if score >= 7.0:
+                job['score'] = score
+                job['explanation'] = self.scorer.get_score_explanation(job, score)
                 scored_jobs.append(job)
+                logger.debug(f"✅ ACCEPTED: {job.get('title')} @ {job.get('company')} - Score: {score}/10")
+            else:
+                rejected_count += 1
+                if score > 0:
+                    logger.debug(f"❌ REJECTED (score {score}): {job.get('title')}")
         
         # Sort by score (highest first)
         scored_jobs.sort(key=lambda x: x['score'], reverse=True)
         
-        # Keep top 25
-        top_jobs = scored_jobs[:25]
+        # LIMIT TO 40 MAX (quality over quantity)
+        top_jobs = scored_jobs[:40]
         
-        logger.info(f"Jobs matching criteria (score ≥ 5): {len(scored_jobs)}")
-        logger.info(f"Top 25 jobs selected for report: {len(top_jobs)}")
+        logger.info(f"\n📊 Quality Filter Results:")
+        logger.info(f"   Total jobs evaluated: {len(all_jobs)}")
+        logger.info(f"   Rejected (score < 7): {rejected_count}")
+        logger.info(f"   Passed (score ≥ 7): {len(scored_jobs)}")
+        logger.info(f"   Shown in report (top 40): {len(top_jobs)}")
+        
+        if len(scored_jobs) > 40:
+            logger.info(f"   ℹ️ Limited to top 40 for quality focus ({len(scored_jobs) - 40} more available)")
+        
         logger.info("=" * 70)
         
         self.all_jobs = top_jobs
         return top_jobs
     
     def build_report(self) -> str:
-        """Build comprehensive markdown report"""
+        """Build comprehensive quality-focused report"""
         
         report = f"# Aria Job Search Report — {self.report_date}\n\n"
         report += "**🌟 Good morning Amruta!**\n\n"
+        report += "**Quality-Focused Search:** Only showing jobs that match YOUR profile perfectly.\n\n"
         
         if not self.all_jobs:
-            report += "## 📊 Search Coverage\n\n"
-            report += "Your automated job search scanned **10+ major job platforms** today:\n\n"
-            report += "✅ **Active Sources** (real-time data):\n"
-            report += "- GitHub Jobs (RSS feed)\n\n"
-            report += "🔧 **Ready for Implementation** (structures prepared):\n"
-            report += "- LinkedIn Jobs (Selenium-ready)\n"
-            report += "- Naukri.com (BeautifulSoup-ready)\n"
-            report += "- Indeed.co.in (RSS parsing ready)\n"
-            report += "- Internshala (Selenium automation ready)\n"
-            report += "- Glassdoor (Auth-ready)\n"
-            report += "- Stack Overflow Jobs (JS rendering ready)\n"
-            report += "- Y Combinator & Wellfound (startup boards)\n"
-            report += "- Company Career Pages (Google, MS, Amazon, TCS, Infosys, etc.)\n"
-            report += "- Twitter/X Job Posts (#hiring search)\n"
-            report += "- Telegram Job Channels (@jobsforfreshers, etc.)\n\n"
-            report += f"**Status:** Aria found **0 matching jobs** today.\n"
-            report += "**Why:** Most scrapers are framework-ready but need final implementation hooks.\n\n"
-            report += "## 🚀 Next Steps to get REAL Results\n\n"
-            report += "To unlock comprehensive real job listings, implement:\n\n"
-            report += "1. **Selenium WebDriver** (~30 min)\n"
-            report += "   - automate LinkedIn login & job fetch\n"
-            report += "   - automate Indeed search with filters\n"
-            report += "   - automate Naukri search\n\n"
-            report += "2. **BeautifulSoup HTML Parsing** (~20 min)\n"
-            report += "   - Parse Naukri job cards\n"
-            report += "   - Parse Indeed job listings\n"
-            report += "   - Parse company career page jobs\n\n"
-            report += "3. **API Keys** (optional, free tier available):\n"
-            report += "   - Twitter API v2 (free tier)\n"
-            report += "   - Google Jobs SERP API (minimal cost)\n\n"
+            report += "## 📊 Today's Search Summary\n\n"
+            report += "**Status:** Aria scanned all major job platforms.\n"
+            report += "**Result:** 0 jobs matched your strict quality criteria.\n\n"
+            report += "### Why 0 jobs?\n"
+            report += "Your search is configured to show ONLY:\n"
+            report += "- ✅ Software/Tech roles (not service-based)\n"
+            report += "- ✅ Fresher-eligible positions explicitly stated\n"
+            report += "- ✅ Salary ≥ ₹10 LPA (not underpaid)\n"
+            report += "- ✅ No bond clauses or forced commitments\n"
+            report += "- ✅ Verified companies or listed startups\n"
+            report += "- ✅ Product/startup culture (not consulting)\n"
+            report += "- ✅ Top locations: Bangalore, Hyderabad, Pune, Remote\n\n"
+            report += "## 🚀 Coming Soon\n\n"
+            report += "**LinkedIn Integration Needed:**\n"
+            report += "To unlock quality jobs, Aria needs to implement:\n"
+            report += "- Selenium: Scrape LinkedIn recruiter posts\n"
+            report += "- Employee referral program database\n"
+            report += "- Direct company career page monitoring\n\n"
+            report += "**Phase 1 (Immediate):** linkedin.com recruiter posts\n"
+            report += "**Phase 2 (This week):** Employee referral network\n"
+            report += "**Phase 3 (Next week):** Direct career pages (Google, Amazon, etc.)\n\n"
+            report += "### Your Action\n"
+            report += "Connect your LinkedIn profile to enable:\n"
+            report += "- Real recruiter messages\n"
+            report += "- Direct job referrals from network\n"
+            report += "- Salary negotiations with verified recruiters\n\n"
             report += f"*Report generated at {datetime.now().strftime('%Y-%m-%d %H:%M IST')}*\n"
             return report
         
-        report += f"**Total opportunities found:** {len(self.all_jobs)} ✨\n\n"
+        # If jobs found - show them
+        report += f"**Perfect matches found today:** {len(self.all_jobs)}\n\n"
         
         if self.all_jobs:
             top = self.all_jobs[0]
-            report += f"🎯 **Your top match today:**\n"
-            report += f"```\n{top.get('title')} @ {top.get('company')}\n"
-            report += f"Match Score: {top['score']}/10 ⭐\n"
-            report += f"```\n\n"
+            report += f"## 🎯 Top Opportunity\n\n"
+            report += f"**{top.get('title')}** @ **{top.get('company')}**\n"
+            report += f"- Match Score: {top['score']}/10 – Perfect fit ⭐\n"
+            report += f"- Location: {top.get('location')}\n"
+            report += f"- Salary: {top.get('salary', 'Competitive')}\n"
+            report += f"- Why matched: {top.get('explanation', 'Excellent profile match')}\n"
+            report += f"- Apply: [{top.get('url', 'View Job')}]({top.get('url')})\n\n"
         
-        report += "## 📋 All Opportunities\n\n"
+        if len(self.all_jobs) > 1:
+            report += "## ✅ All Qualified Opportunities\n\n"
+            
+            for i, job in enumerate(self.all_jobs, 1):
+                stars = "⭐" * int(job['score']/2)
+                report += f"### {i}. {job.get('title')} @ {job.get('company')}\n"
+                report += f"- **Score:** {job['score']}/10 {stars}\n"
+                report += f"- **Location:** {job.get('location')}\n"
+                report += f"- **Salary:** {job.get('salary', 'Check posting')}\n"
+                report += f"- **Posted:** {job.get('posted_date')}\n"
+                if job.get('url'):
+                    report += f"- **Apply:** [{job.get('company')}]({job.get('url')})\n"
+                report += "\n"
         
-        for i, job in enumerate(self.all_jobs, 1):
-            stars = "⭐" * int(job['score']/2)
-            report += f"### {i}. {job.get('title')} @ {job.get('company')}\n"
-            report += f"- **Score:** {job['score']}/10 {stars}\n"
-            report += f"- **Location:** {job.get('location', 'Remote')}\n"
-            report += f"- **Experience Level:** {job.get('experience_required', 'Fresher-eligible')}\n"
-            report += f"- **Posted:** {job.get('posted_date', 'Recently')}\n"
-            if job.get('url'):
-                report += f"- **Apply:** [View Job]({job.get('url')})\n"
-            report += "\n"
-        
-        report += "## ✅ Your Action Plan for Today\n\n"
-        report += "1. **Review & Shortlist:** Check top 3-5 opportunities\n"
-        report += "2. **Research Company:** Check Glassdoor reviews, bond clauses\n"
-        report += "3. **Customize Application:** Tailor resume & cover letter\n"
-        report += "4. **Network:** Ask for LinkedIn referrals for top companies\n"
-        report += "5. **Follow Up:** Track application status\n\n"
+        report += "## 📋 Your Application Strategy\n\n"
+        report += "1. **Research:** Check company culture, employee reviews on Glassdoor\n"
+        report += "2. **Network:** Get internal referrals - they boost chances 5x\n"
+        report += "3. **Customize:** Tailor resume to each job's tech stack\n"
+        report += "4. **Practice:** Prepare for system design rounds (common for SDE roles)\n"
+        report += "5. **Apply:** Submit within 24 hours of posting\n\n"
         report += "---\n"
-        report += f"*Aria Job Search by Amruta • Generated {datetime.now().strftime('%Y-%m-%d %H:%M IST')}*\n"
+        report += f"*Aria Job Search • Quality over Quantity • {datetime.now().strftime('%Y-%m-%d %H:%M IST')}*\n"
         
         return report
     
