@@ -166,39 +166,36 @@ AMRUTA_PROFILE = {
             'customer service',
             'operations',
         ],
-        'reject_companies': [
-            'TCS',
-            'Infosys',
-            'Wipro',
-            'HCL',
-            'Cognizant',
-            'Accenture',
-            'Deloitte',
-            'EY',
-            'KPMG',
-            'PwC',
-        ],  # Typically service-based with low fresher salaries
+        # NOTE: Removed company restrictions - search ALL companies
+        # Only filter by role type and experience level
         
         'min_job_quality_score': 7,  # Only show jobs scoring 7+ out of 10
         
         'prefer_company_types': [
-            'Product',
-            'Startup',
-            'Tech Company',
-            'FAANG',
-            'Indian Tech',
+            # Removed: search all companies, not just specific types
         ],
     },
     
     # LinkedIn specific preferences
     'linkedin_preferences': {
         'filter_by': [
-            'recruiter_posts',
-            'employee_referrals',
-            'company_careers',
+            'all_posts',  # Include all job posts, not just recruiter
+            'all_companies',  # All companies, not just verified
         ],
-        'must_have_salary_info': True,
-        'must_state_fresher_eligible': True,
+        'must_have_salary_info': False,  # Nice to have, not required
+        'must_state_fresher_eligible': True,  # Must be fresher-eligible
+    },
+    
+    # JOB SEARCH PRIORITY
+    'search_priority': {
+        'linkedin': 1,  # Primary
+        'naukri': 1,    # Primary
+        'indeed': 1,    # Primary
+        'internshala': 2,  # Secondary
+        'glassdoor': 2,    # Secondary
+        'unstop': 2,       # Secondary
+        'github_jobs': 2,  # Secondary
+        'company_careers': 1,  # Primary - search all company pages
     }
 
 }
