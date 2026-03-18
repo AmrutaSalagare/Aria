@@ -1,0 +1,17 @@
+{
+  "jobs": [
+    {
+      "id": "daily-job-search",
+      "name": "Daily Fresher Job Search",
+      "description": "Run Aria's full job search and deliver report to Amruta at 6 AM IST",
+      "cronExpression": "0 6 * * *",
+      "timezone": "Asia/Kolkata",
+      "agentId": "aria",
+      "prompt": "Good morning Aria. It is 6 AM. Time for the daily job search. Read AGENTS.md, USER.md, and skills/job-search/SKILL.md. Then run the full search across all platforms. Score every job against Amruta's profile. Keep the top 25. Build the full report. Send it to Telegram in chunks. Save it to workspace/reports/. Write your memory entry. Go.",
+      "isolatedSession": true,
+      "timeout": 1800,
+      "retryOnFailure": true,
+      "maxRetries": 1
+    }
+  ]
+}
